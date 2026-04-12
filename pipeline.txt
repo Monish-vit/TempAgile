@@ -1,0 +1,455 @@
+Electricity pipeline
+
+pipeline{
+	agent any
+	tools{
+		maven 'M3'
+	}
+	stages{
+		stage('Checkout'){
+			steps{
+				git branch: 'main', url:'url link'
+			}	
+		}
+		stage('Build'){
+			steps{
+				echo ' Compiling the electricity bill'
+				bat 'mvn clean compile'
+			}
+		}
+		stage('Test'){
+			steps{
+				echo 'Running Junit 4 Unit test'
+				bat 'mvn test'
+			}
+		}
+	}
+	post{
+		success{
+			echo ' Agile workflow completed successfully'
+		}
+		failure{
+			echo 'Build failed. Check console output'
+		}
+	}
+}
+
+-----------------------------------------------------
+
+
+Student attendance 
+
+pom.xml 
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.attendance</groupId>
+    <artifactId>AttendanceAnalyser</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+
+
+App.java
+src/main/java/com/attendance/App.java
+package com.attendance;
+
+public class App {
+    
+    public double calculatePercentage(int totalClasses, int attendedClasses) {
+        if (totalClasses <= 0) return 0.0;
+        return ((double) attendedClasses / totalClasses) * 100;
+    }
+
+    public String checkEligibility(double percentage) {
+        if (percentage >= 75.0) {
+            return "ELIGIBLE";
+        } else if (percentage >= 65.0) {
+            return "WARNING: LOW ATTENDANCE";
+        } else {
+            return "INELIGIBLE";
+        }
+    }
+
+    public static void main(String[] args) {
+        App app = new App();
+        double myAttendance = app.calculatePercentage(100, 78);
+        System.out.println("Attendance: " + myAttendance + "%");
+        System.out.println("Status: " + app.checkEligibility(myAttendance));
+    }
+}
+
+
+
+
+AppTest.java
+src/test/java/com/attendance/AppTest.java
+package com.attendance;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+public class AppTest {
+    App app = new App();
+
+    @Test
+    public void testEligible() {
+        double pct = app.calculatePercentage(100, 80);
+        assertEquals("ELIGIBLE", app.checkEligibility(pct));
+    }
+
+    @Test
+    public void testWarning() {
+        double pct = app.calculatePercentage(100, 68);
+        assertEquals("WARNING: LOW ATTENDANCE", app.checkEligibility(pct));
+    }
+
+    @Test
+    public void testIneligible() {
+        double pct = app.calculatePercentage(100, 50);
+        assertEquals("INELIGIBLE", app.checkEligibility(pct));
+    }
+}
+
+
+
+Pipeline (use pipeline from scm)
+
+pipeline {
+    agent any
+
+    tools {
+        // Ensure this matches the name in Jenkins Global Tool Configuration
+        maven 'Maven3' 
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build & Compile') {
+            steps {
+                echo 'Compiling Attendance Analyser Code...'
+                bat 'mvn clean compile'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running Eligibility Tests...'
+                bat 'mvn test'
+            }
+        }
+
+        stage('Archive Result') {
+            steps {
+                echo 'Packaging App...'
+                bat 'mvn package -DskipTests'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build Successful: Student Attendance App is ready.'
+        }
+        failure {
+            echo 'Build Failed: Check the code or test cases.'
+        }
+    }
+}
+
+
+or else 
+
+stage('Checkout') {
+            steps {
+                // Replace the URL with your actual GitHub repo link
+                git branch: 'main', url: 'https://github.com/YourUsername/YourRepoName.git'
+            }
+        }
+
+
+***********************************************
+
+Employee salary
+
+pom.xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.payroll</groupId>
+    <artifactId>PayrollApp</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+
+
+App.java
+src/main/java/com/payroll/App.java
+
+package com.payroll;
+
+public class App {
+    public double calculateNetSalary(double basicSalary) {
+        double da = basicSalary * 0.40;   // 40% Dearness Allowance
+        double pf = basicSalary * 0.12;   // 12% Provident Fund
+        
+        double grossSalary = basicSalary + da;
+        double tax = grossSalary * 0.10;  // 10% Tax on Gross
+        
+        return grossSalary - (pf + tax);
+    }
+
+    public static void main(String[] args) {
+        App app = new App();
+        double net = app.calculateNetSalary(50000);
+        System.out.println("Net Salary for Basic 50000: " + net);
+    }
+}
+
+
+AppTest.java
+src/test/java/com/payroll/AppTest.java
+
+package com.payroll;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+public class AppTest {
+    @Test
+    public void testPayrollCalculation() {
+        App app = new App();
+        // Calculation for 50000:
+        // DA = 20000, Gross = 70000
+        // PF = 6000, Tax = 7000, Total Ded = 13000
+        // Net = 70000 - 13000 = 57000
+        assertEquals(57000.0, app.calculateNetSalary(50000));
+    }
+}
+
+
+Pipeline script
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven3' // Change this to your Maven name in Jenkins Tools
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Manually defining the branch and URL for the internal script
+                git branch: 'main', url: 'https://github.com/YourUsername/YourRepoName.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building Payroll Application...'
+                bat 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running Payroll Unit Tests...'
+                bat 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                echo 'Creating JAR file...'
+                bat 'mvn package -DskipTests'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Payroll Pipeline Completed.'
+        }
+    }
+}
+
+
+*******************************************************************
+
+health risk 
+
+pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.health</groupId>
+    <artifactId>HealthAssessor</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+
+
+
+App.java
+src/main/java/com/health/App.java
+
+package com.health;
+
+public class App {
+    
+    public double calculateBMI(double weightKg, double heightM) {
+        if (heightM <= 0) return 0;
+        return weightKg / (heightM * heightM);
+    }
+
+    public String assessRisk(double bmi, int age, String lifestyle) {
+        // Base risk from BMI
+        int score = 0;
+        if (bmi >= 30.0) score += 3;      // Obese
+        else if (bmi >= 25.0) score += 1; // Overweight
+        
+        // Age factor
+        if (age > 50) score += 2;
+        
+        // Lifestyle factor
+        if (lifestyle.equalsIgnoreCase("sedentary")) score += 2;
+
+        // Final Category
+        if (score >= 5) return "HIGH RISK";
+        if (score >= 2) return "MODERATE RISK";
+        return "LOW RISK";
+    }
+
+    public static void main(String[] args) {
+        App app = new App();
+        double bmi = app.calculateBMI(85, 1.75);
+        System.out.println("Result: " + app.assessRisk(bmi, 55, "sedentary"));
+    }
+}
+
+
+
+AppTest.java
+src/test/java/com/health/AppTest.java
+
+package com.health;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+public class AppTest {
+    App app = new App();
+
+    @Test
+    public void testHighRisk() {
+        // Obese BMI (~31), Over 50, Sedentary = High Risk
+        double bmi = app.calculateBMI(95, 1.75);
+        assertEquals("HIGH RISK", app.assessRisk(bmi, 55, "sedentary"));
+    }
+
+    @Test
+    public void testLowRisk() {
+        // Normal BMI, Young, Active = Low Risk
+        double bmi = app.calculateBMI(65, 1.75);
+        assertEquals("LOW RISK", app.assessRisk(bmi, 25, "active"));
+    }
+}
+
+
+
+Pipeline 
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven3' 
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // IMPORTANT: Replace with your actual GitHub URL
+                git branch: 'main', url: 'https://github.com/YourUser/HealthRiskRepo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'mvn clean compile'
+            }
+        }
+
+        stage('Run Health Tests') {
+            steps {
+                // This ensures your risk categories are calculated correctly
+                bat 'mvn test'
+            }
+        }
+
+        stage('Archive Build') {
+            steps {
+                bat 'mvn package -DskipTests'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Health Risk Assessment Tool built and verified!'
+        }
+    }
+}
+
