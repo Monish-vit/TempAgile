@@ -1,0 +1,15 @@
+Design and implement a Voting Eligibility System program that determines whether a person is
+eligible to vote based on specific criteria. The program should define an appropriate class to store
+voter details such as name, age, citizenship, voter ID, and ID validity status. It must accept input for
+one or more voters and evaluate eligibility using the conditions that the voter must be at least 18 years
+old, must be a citizen of the country (e.g., Indian citizen), and must possess a valid voter ID. The
+program should display whether each voter is eligible or not, and in cases of ineligibility, it should
+clearly indicate the reason, such as being underage, not a citizen, or having an invalid ID
+• Create a GitHub repository for a Maven-based application following the standard Maven
+directory structure [10]
+• Clone this repository into VS Code, make the necessary code modifications, and commit the
+changes back to the Git repository [10]
+• Build and verify the application within VS Code to ensure it is compatible with Jenkins
+integration [10]
+• Finally, set up a Pipeline project in Jenkins and execute the CI/CD process by writing and
+running the required pipeline script [20]
