@@ -13,3 +13,9 @@ changes back to the Git repository [10]
 integration [10]
 • Finally, set up a Pipeline project in Jenkins and execute the CI/CD process by writing and
 running the required pipeline script [20]
+
+
+
+Send me Full answer step by step 
+send me with sub division
+paste the answer here itself and commit this same file
