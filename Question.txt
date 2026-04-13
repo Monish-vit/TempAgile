@@ -15,7 +15,190 @@ integration [10]
 running the required pipeline script [20]
 
 
+ANSWER:
+voter.java
+public class Voter {
+    String name;
+    int age;
+    String citizenship;
+    String voterId;
+    boolean isIdValid;
 
-Send me Full answer step by step 
-send me with sub division
-paste the answer here itself and commit this same file
+    public Voter(String name, int age, String citizenship, String voterId, boolean isIdValid) {
+        this.name = name;
+        this.age = age;
+        this.citizenship = citizenship;
+        this.voterId = voterId;
+        this.isIdValid = isIdValid;
+    }
+
+    public String checkEligibility() {
+        if (age < 18) {
+            return "Not Eligible: Underage";
+        }
+        if (!citizenship.equalsIgnoreCase("Indian")) {
+            return "Not Eligible: Not an Indian citizen";
+        }
+        if (!isIdValid) {
+            return "Not Eligible: Invalid Voter ID";
+        }
+        return "Eligible to Vote";
+    }
+
+    public void displayResult() {
+        System.out.println("Name: " + name);
+        System.out.println("Status: " + checkEligibility());
+        System.out.println("---------------------------");
+    }
+}
+
+main.java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of voters: ");
+        int n = sc.nextInt();
+        sc.nextLine();
+
+        List<Voter> voters = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println("\nEnter details for voter " + (i + 1));
+
+            System.out.print("Name: ");
+            String name = sc.nextLine();
+
+            System.out.print("Age: ");
+            int age = sc.nextInt();
+            sc.nextLine();
+
+            System.out.print("Citizenship: ");
+            String citizenship = sc.nextLine();
+
+            System.out.print("Voter ID: ");
+            String voterId = sc.nextLine();
+
+            System.out.print("Is ID Valid (true/false): ");
+            boolean isValid = sc.nextBoolean();
+            sc.nextLine();
+
+            voters.add(new Voter(name, age, citizenship, voterId, isValid));
+        }
+
+        System.out.println("\n--- Eligibility Results ---");
+
+        for (Voter v : voters) {
+            v.displayResult();
+        }
+
+        sc.close();
+    }
+}
+
+Maven Directory Setup:
+voting-system/
+│── pom.xml
+└── src/
+    └── main/
+        └── java/
+            └── com/example/
+                ├── Main.java
+                └── Voter.java
+
+pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>voting-system</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+</project>
+
+PUSH TO GITHUB
+git init
+git add .
+git commit -m "Initial commit - Voting system"
+git branch -M main
+git remote add origin https://github.com/your-username/voting-system.git
+git push -u origin main
+
+CLONE TO VSCODE
+git clone https://github.com/your-username/voting-system.git
+cd voting-system
+code .
+
+MODIFY + COMMIT
+git add .
+git commit -m "Updated eligibility logic"
+git push
+
+Compile Project
+mvn clean compile
+Run Program
+mvn exec:java -Dexec.mainClass="com.example.Main"
+Package Build
+mvn clean package
+
+Create Pipeline Job
+Open Jenkins
+Click New Item
+Select Pipeline
+Name: Voting-System-CI
+
+PIPELINE SCRIPT
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+        jdk 'JDK17'
+    }
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/your-username/voting-system.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                sh 'java -cp target/voting-system-1.0-SNAPSHOT.jar com.example.Main'
+            }
+        }
+    }
+}
+
+GitHub Repo → Jenkins Pipeline → Build → Test → Package → Run
